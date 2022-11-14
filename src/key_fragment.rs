@@ -23,20 +23,19 @@ mod key_fragment_test {
     use super::*;
     use evdev::Key;
 
-    #[test]
-    fn create_new_key_fragment() {
-        let _ = KeyFragment::new("L1", Key::KEY_A.code());
+    fn create_l1_a_fragment() -> KeyFragment {
+        KeyFragment::new("L1", Key::KEY_A.code())
     }
 
     #[test]
     fn get_device_alias() {
-        let l1_a_fragment = KeyFragment::new("L1", Key::KEY_A.code());
+        let l1_a_fragment = create_l1_a_fragment();
         assert_eq!(l1_a_fragment.get_device_alias(), "L1".to_string());
     }
 
     #[test]
     fn get_key_code() {
-        let l1_a_fragment = KeyFragment::new("L1", Key::KEY_A.code());
+        let l1_a_fragment = create_l1_a_fragment();
         assert_eq!(l1_a_fragment.get_key_code(), Key::KEY_A.code());
     }
 }
