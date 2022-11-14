@@ -10,16 +10,33 @@ impl KeyFragment {
             key_code,
         }
     }
+    pub fn get_device_alias(&self) -> String {
+        self.device_alias.to_string()
+    }
+    pub fn get_key_code(&self) -> u16 {
+        self.key_code
+    }
 }
 
 #[cfg(test)]
 mod key_fragment_test {
-    use evdev::Key;
-
     use super::*;
+    use evdev::Key;
 
     #[test]
     fn create_new_key_fragment() {
         let _ = KeyFragment::new("L1", Key::KEY_A.code());
+    }
+
+    #[test]
+    fn get_device_alias() {
+        let l1_a_fragment = KeyFragment::new("L1", Key::KEY_A.code());
+        assert_eq!(l1_a_fragment.get_device_alias(), "L1".to_string());
+    }
+
+    #[test]
+    fn get_key_code() {
+        let l1_a_fragment = KeyFragment::new("L1", Key::KEY_A.code());
+        assert_eq!(l1_a_fragment.get_key_code(), Key::KEY_A.code());
     }
 }

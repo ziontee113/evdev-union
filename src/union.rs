@@ -16,16 +16,19 @@ impl Union {
 
 #[cfg(test)]
 mod union_test {
-    use evdev::Key;
-
-    use crate::key_fragment::KeyFragment;
-
     use super::*;
+    use crate::key_fragment::KeyFragment;
+    use evdev::Key;
 
     #[test]
     fn create_new_union() {
         let l1_d_fragment = KeyFragment::new("L1", Key::KEY_D.code());
         let l1_f_fragment = KeyFragment::new("L1", Key::KEY_F.code());
-        let _ = Union::new(vec![l1_d_fragment, l1_f_fragment], 30);
+        let my_union = Union::new(vec![l1_d_fragment, l1_f_fragment], 30);
+
+        // assert_eq!(
+        //     my_union.members.get(0).unwrap().device_alias,
+        //     "L1".to_string()
+        // );
     }
 }
