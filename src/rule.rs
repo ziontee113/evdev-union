@@ -59,20 +59,6 @@ mod rule_test {
 
     use super::*;
 
-    fn create_rule_input() -> RuleInput {
-        let l1_d_fragment = KeyFragment::new("L1", Key::KEY_D.code());
-        let l1_f_fragment = KeyFragment::new("L1", Key::KEY_F.code());
-        let l1_df_union = Union::new(vec![l1_d_fragment, l1_f_fragment], 30);
-
-        let r1_j_fragment = KeyFragment::new("R1", Key::KEY_J.code());
-
-        let rule_components = vec![
-            RuleInputType::Union(l1_df_union),
-            RuleInputType::Fragment(r1_j_fragment),
-        ];
-        RuleInput::new(rule_components)
-    }
-
     fn create_key_sequence_output(sequence: Vec<u16>) -> RuleOutput {
         RuleOutput::KeySequence(OutputKeySequence::new(sequence))
     }
@@ -83,9 +69,30 @@ mod rule_test {
 
     #[test]
     fn create_rule() {
-        let input_1 = create_rule_input();
-        let input_2 = create_rule_input();
+        // create input_1
+        let l1_d_fragment = KeyFragment::new("L1", Key::KEY_D.code());
+        let l1_f_fragment = KeyFragment::new("L1", Key::KEY_F.code());
+        let l1_df_union = Union::new(vec![l1_d_fragment, l1_f_fragment], 30);
 
+        let r1_j_fragment = KeyFragment::new("R1", Key::KEY_J.code());
+
+        let rule_components = vec![
+            RuleInputType::Union(l1_df_union),
+            RuleInputType::Fragment(r1_j_fragment),
+        ];
+        let input_1 = RuleInput::new(rule_components);
+
+        // create input_2
+        let l1_leftctrl_fragment = KeyFragment::new("L1", Key::KEY_LEFTCTRL.code());
+        let r1_j_fragment = KeyFragment::new("R1", Key::KEY_J.code());
+
+        let rule_components = vec![
+            RuleInputType::Fragment(l1_leftctrl_fragment),
+            RuleInputType::Fragment(r1_j_fragment),
+        ];
+        let input_2 = RuleInput::new(rule_components);
+
+        // create rules from inputs and outputs
         let command_output = create_command_output("firefox");
         let key_sequence_output = create_key_sequence_output(vec![Key::KEY_DOWN.code()]);
 
