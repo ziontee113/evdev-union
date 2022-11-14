@@ -25,6 +25,16 @@ mod rule_test {
 
     #[test]
     fn can_create_rule() {
+        // what if we can:
+        // let input = rule_input!(
+        //      union!("L1|D", "L1|F")
+        //      fragment!("R1|J"),
+        // );
+        //
+        // let output = output_command!("firefox");
+        // let output_2 = output_sequence!("down");
+
+        // hold Union [L1|D L1|F], press R1|J to emit KEY_DOWN on virtual_keyboard
         let l1_d_fragment = KeyFragment::new("L1", Key::KEY_D.code());
         let l1_f_fragment = KeyFragment::new("L1", Key::KEY_F.code());
         let l1_df_union = Union::new(vec![l1_d_fragment, l1_f_fragment], 30);

@@ -1,3 +1,6 @@
+use evdev::Key;
+use std::str::FromStr;
+
 pub struct KeyFragment {
     device_alias: String,
     key_code: u16,
@@ -10,6 +13,21 @@ impl KeyFragment {
             key_code,
         }
     }
+    pub fn from_str(str: &str) -> Self {
+        let mut split = str.split('|');
+        let device_alias = split.next().unwrap().to_string();
+        let mut key = split.next().unwrap().to_string().to_uppercase();
+        key = format!("KEY_{}", key);
+        let key_code = Key::from_str(&key).unwrap().code();
+
+        Self {
+            device_alias,
+            key_code,
+        }
+    }
+}
+
+impl KeyFragment {
     pub fn get_device_alias(&self) -> String {
         self.device_alias.to_string()
     }
@@ -37,5 +55,12 @@ mod key_fragment_test {
     fn get_key_code() {
         let l1_a_fragment = create_l1_a_fragment();
         assert_eq!(l1_a_fragment.get_key_code(), Key::KEY_A.code());
+    }
+
+    #[test]
+    fn fragment_from_str() {
+        let fragment = KeyFragment::from_str("L1|D");
+        assert_eq!("L1", fragment.get_device_alias());
+        assert_eq!(Key::KEY_D.code(), fragment.get_key_code());
     }
 }
