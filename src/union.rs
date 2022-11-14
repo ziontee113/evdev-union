@@ -26,9 +26,21 @@ mod union_test {
         let l1_f_fragment = KeyFragment::new("L1", Key::KEY_F.code());
         let my_union = Union::new(vec![l1_d_fragment, l1_f_fragment], 30);
 
-        // assert_eq!(
-        //     my_union.members.get(0).unwrap().device_alias,
-        //     "L1".to_string()
-        // );
+        assert_eq!(
+            my_union.members.get(0).unwrap().get_device_alias(),
+            "L1".to_string()
+        );
+        assert_eq!(
+            my_union.members.get(0).unwrap().get_key_code(),
+            Key::KEY_D.code()
+        );
+        assert_eq!(
+            my_union.members.get(1).unwrap().get_device_alias(),
+            "L1".to_string()
+        );
+        assert_eq!(
+            my_union.members.get(1).unwrap().get_key_code(),
+            Key::KEY_F.code()
+        );
     }
 }
