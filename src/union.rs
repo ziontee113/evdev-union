@@ -12,6 +12,9 @@ impl Union {
             interval_limit,
         }
     }
+    pub fn get_members(&self) -> &Vec<KeyFragment> {
+        &self.members
+    }
 }
 
 #[cfg(test)]
@@ -20,27 +23,20 @@ mod union_test {
     use crate::key_fragment::KeyFragment;
     use evdev::Key;
 
-    #[test]
-    fn create_new_union() {
+    fn create_l1_df_union() -> Union {
         let l1_d_fragment = KeyFragment::new("L1", Key::KEY_D.code());
         let l1_f_fragment = KeyFragment::new("L1", Key::KEY_F.code());
-        let my_union = Union::new(vec![l1_d_fragment, l1_f_fragment], 30);
+        Union::new(vec![l1_d_fragment, l1_f_fragment], 30)
+    }
 
-        assert_eq!(
-            my_union.members.get(0).unwrap().get_device_alias(),
-            "L1".to_string()
-        );
-        assert_eq!(
-            my_union.members.get(0).unwrap().get_key_code(),
-            Key::KEY_D.code()
-        );
-        assert_eq!(
-            my_union.members.get(1).unwrap().get_device_alias(),
-            "L1".to_string()
-        );
-        assert_eq!(
-            my_union.members.get(1).unwrap().get_key_code(),
-            Key::KEY_F.code()
-        );
+    #[test]
+    fn get_members() {
+        let l1_df_union = create_l1_df_union();
+        let members = l1_df_union.get_members();
+
+        assert_eq!(members.get(0).unwrap().get_device_alias(), "L1".to_string());
+        assert_eq!(members.get(0).unwrap().get_key_code(), Key::KEY_D.code());
+        assert_eq!(members.get(1).unwrap().get_device_alias(), "L1".to_string());
+        assert_eq!(members.get(1).unwrap().get_key_code(), Key::KEY_F.code());
     }
 }
