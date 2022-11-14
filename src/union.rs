@@ -15,6 +15,9 @@ impl Union {
     pub fn get_members(&self) -> &Vec<KeyFragment> {
         &self.members
     }
+    pub fn get_interval_limit(&self) -> u32 {
+        self.interval_limit
+    }
 }
 
 #[cfg(test)]
@@ -38,5 +41,12 @@ mod union_test {
         assert_eq!(members.get(0).unwrap().get_key_code(), Key::KEY_D.code());
         assert_eq!(members.get(1).unwrap().get_device_alias(), "L1".to_string());
         assert_eq!(members.get(1).unwrap().get_key_code(), Key::KEY_F.code());
+    }
+
+    #[test]
+    fn get_interval_limit() {
+        let l1_df_union = create_l1_df_union();
+        let interval_limit = l1_df_union.get_interval_limit();
+        assert_eq!(interval_limit, 30);
     }
 }
