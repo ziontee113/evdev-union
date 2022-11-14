@@ -1,6 +1,13 @@
 use evdev::Key;
 use std::str::FromStr;
 
+#[allow(unused_macros)]
+macro_rules! fragment {
+    ($a:expr) => {
+        KeyFragment::from_str($a)
+    };
+}
+
 pub struct KeyFragment {
     device_alias: String,
     key_code: u16,
@@ -60,6 +67,13 @@ mod key_fragment_test {
     #[test]
     fn fragment_from_str() {
         let fragment = KeyFragment::from_str("L1|D");
+        assert_eq!("L1", fragment.get_device_alias());
+        assert_eq!(Key::KEY_D.code(), fragment.get_key_code());
+    }
+
+    #[test]
+    fn fragment_macro() {
+        let fragment = fragment!("L1|D");
         assert_eq!("L1", fragment.get_device_alias());
         assert_eq!(Key::KEY_D.code(), fragment.get_key_code());
     }
