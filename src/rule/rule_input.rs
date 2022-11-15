@@ -1,5 +1,6 @@
 use crate::{key_fragment::KeyFragment, union::Union};
 
+#[allow(clippy::module_name_repetitions)]
 pub enum RuleInputType {
     Fragment(KeyFragment),
     Union(Union),
@@ -17,21 +18,17 @@ impl RuleInput {
 
 #[cfg(test)]
 mod test_rule_input {
-    use evdev::Key;
-
     use super::*;
+    use crate::union;
 
     #[test]
     fn can_create_rule_input() {
-        let l1_d_fragment = KeyFragment::new("L1", Key::KEY_D.code());
-        let l1_f_fragment = KeyFragment::new("L1", Key::KEY_F.code());
+        let union = union!("L1|D", "L1|F");
+        let j_fragment = KeyFragment::from_str("R1|J");
 
-        let l1_df_union = Union::new(vec![l1_d_fragment, l1_f_fragment], 30);
-        let r1_j_fragment = KeyFragment::new("R1", Key::KEY_J.code());
-
-        let _ = RuleInput::new(vec![
-            RuleInputType::Union(l1_df_union),
-            RuleInputType::Fragment(r1_j_fragment),
+        let _rule_input = RuleInput::new(vec![
+            RuleInputType::Union(union),
+            RuleInputType::Fragment(j_fragment),
         ]);
     }
 }

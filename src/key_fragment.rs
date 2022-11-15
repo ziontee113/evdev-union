@@ -2,6 +2,7 @@ use evdev::Key;
 use std::str::FromStr;
 
 #[allow(unused_macros)]
+#[macro_export]
 macro_rules! fragment {
     ($a:expr) => {
         KeyFragment::from_str($a)

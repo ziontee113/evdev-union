@@ -1,6 +1,7 @@
 use crate::key_fragment::KeyFragment;
 
 #[allow(unused_macros)]
+#[macro_export]
 macro_rules! union {
     ($($a:expr), *) => {
         {
