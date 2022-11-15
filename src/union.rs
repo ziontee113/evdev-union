@@ -4,10 +4,10 @@ use crate::key_fragment::KeyFragment;
 #[macro_export]
 macro_rules! union {
     ($($a:expr), *) => {
-        Union::new(vec![$(KeyFragment::from_str($a),)*], 25)
+        Union::new(vec![ $( KeyFragment::from_str($a), )* ], 25)
     };
     ($($a:expr), * => $interval:expr) => {
-        Union::new(vec![$(KeyFragment::from_str($a),)*], $interval)
+        Union::new(vec![ $( KeyFragment::from_str($a), )* ], $interval)
     }
 }
 
