@@ -1,7 +1,7 @@
 #![allow(unused_macros)]
 
 pub(crate) mod rule_input;
-mod rule_output;
+pub(crate) mod rule_output;
 use self::{rule_input::RuleInput, rule_output::RuleOutput};
 
 pub struct Rule {
@@ -15,6 +15,7 @@ impl Rule {
     }
 }
 
+#[macro_export]
 macro_rules! rule {
     ($input:expr, $output:expr) => {
         Rule::new($input, $output)

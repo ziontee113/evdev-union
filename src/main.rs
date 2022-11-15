@@ -5,6 +5,7 @@
 mod key_fragment;
 mod learn_macros;
 mod rule;
+mod ruleset;
 mod union;
 
 fn main() {
