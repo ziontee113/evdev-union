@@ -1,8 +1,10 @@
+#![allow(unused_macros)]
+
 pub(crate) mod rule_input;
 mod rule_output;
 use self::{rule_input::RuleInput, rule_output::RuleOutput};
 
-struct Rule {
+pub struct Rule {
     input: RuleInput,
     output: RuleOutput,
 }
@@ -11,6 +13,12 @@ impl Rule {
     pub fn new(input: RuleInput, output: RuleOutput) -> Self {
         Self { input, output }
     }
+}
+
+macro_rules! rule {
+    ($input:expr, $output:expr) => {
+        Rule::new($input, $output)
+    };
 }
 
 #[cfg(test)]
@@ -32,5 +40,13 @@ mod rule_test {
         let output = rule_output_sequence!(Key::KEY_DOWN.code()).to_output();
 
         let _rule = Rule::new(input, output);
+    }
+
+    #[test]
+    fn create_rule_with_macro() {
+        let _rule = rule!(
+            rule_input!(fragment!("L1|R"), fragment!("R1|J")),
+            rule_output_sequence!(Key::KEY_F12.code(), Key::KEY_J.code()).to_output()
+        );
     }
 }
