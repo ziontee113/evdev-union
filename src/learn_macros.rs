@@ -1,13 +1,5 @@
 #![allow(unused_macros)]
 
-macro_rules! add {
-    ($($a:expr),+ => $b:expr) => {
-        0
-        $(+$a)*
-        -$b
-    }
-}
-
 macro_rules! my_macro {
     ($a:expr) => {{
         let x = $a;
@@ -35,8 +27,21 @@ macro_rules! munch{
     }
 }
 
+macro_rules! add {
+    ($($a:expr)+) => {
+        0
+        $(+$a)*
+    }
+}
+
 #[cfg(test)]
 mod test_macros {
+    #[test]
+    fn variable_args_add() {
+        let result = add![1 9];
+        assert_eq![result, 10];
+    }
+
     #[test]
     fn pp_macro() {
         assert_eq!("hi", my_macro!("hi|hello"));
@@ -45,11 +50,5 @@ mod test_macros {
     #[test]
     fn tt_muncher_macro() {
         assert_eq![munch!(1, 2, 3), 6];
-    }
-
-    #[test]
-    fn variable_args_add() {
-        let result = add![1, 9 => 10];
-        assert_eq![result, 0];
     }
 }

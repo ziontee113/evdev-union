@@ -23,6 +23,7 @@ impl RuleInput {
     }
 }
 
+#[macro_export]
 macro_rules! rule_input {
     ($($a:expr), *) => {
         RuleInput::new(vec![ $($a.wrap_me_in_rule_input_type_enum(),)* ])
@@ -52,5 +53,8 @@ mod test_rule_input {
 
         let rule_input = rule_input!(union, j_fragment);
         dbg!(rule_input);
+
+        let rule_input_2 = rule_input!(union!("L1|D", "L1|F", "L1|S"), fragment!("R1|K"));
+        dbg!(rule_input_2);
     }
 }

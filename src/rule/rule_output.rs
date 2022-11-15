@@ -1,6 +1,6 @@
-#![allow(unused_macros)]
+#![allow(unused_macros, clippy::module_name_repetitions)]
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct OutputCommand {
     command: String,
 }
@@ -16,6 +16,13 @@ impl OutputCommand {
     }
 }
 
+impl WrapMeInRuleOutput for OutputCommand {
+    fn to_output(&self) -> RuleOutput {
+        RuleOutput::Command(self.clone())
+    }
+}
+
+#[derive(Clone, Debug)]
 pub struct OutputKeySequence {
     sequence: Vec<u16>,
 }
@@ -29,17 +36,30 @@ impl OutputKeySequence {
     }
 }
 
+impl WrapMeInRuleOutput for OutputKeySequence {
+    fn to_output(&self) -> RuleOutput {
+        RuleOutput::KeySequence(self.clone())
+    }
+}
+
+#[derive(Debug)]
 pub enum RuleOutput {
     Command(OutputCommand),
     KeySequence(OutputKeySequence),
 }
 
+pub trait WrapMeInRuleOutput {
+    fn to_output(&self) -> RuleOutput;
+}
+
+#[macro_export]
 macro_rules! rule_output_cmd {
     ($a:expr) => {
         OutputCommand::new($a)
     };
 }
 
+#[macro_export]
 macro_rules! rule_output_sequence {
     ($($a:expr), *) => {
         OutputKeySequence::new(vec![ $($a,)* ])
@@ -81,5 +101,11 @@ mod test_rule_output {
     fn rule_output_sequence_macro() {
         let _output_sequence =
             rule_output_sequence!(Key::KEY_LEFTCTRL.code(), Key::KEY_DOWN.code());
+    }
+
+    #[test]
+    fn to_output_methods() {
+        let _cmd_rule_output = rule_output_cmd!("firefox").to_output();
+        let _key_sequence_rule_output = rule_output_sequence!(Key::KEY_DOWN.code()).to_output();
     }
 }

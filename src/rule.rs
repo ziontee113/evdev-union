@@ -16,24 +16,20 @@ impl Rule {
 #[cfg(test)]
 mod rule_test {
     use super::{
-        rule_input::{RuleInput, RuleInputType},
-        rule_output::{OutputKeySequence, RuleOutput},
+        rule_output::{OutputKeySequence, WrapMeInRuleOutput},
         Rule,
     };
-    use crate::{fragment, key_fragment::KeyFragment, union, union::Union};
+    use crate::{fragment, key_fragment::KeyFragment, rule_input, union, union::Union};
+    use crate::{
+        rule::rule_input::{RuleInput, WrapInRuleInputType},
+        rule_output_sequence,
+    };
     use evdev::Key;
 
     #[test]
     fn can_create_rule() {
-        let union = union!("L1|D", "L1|F" => 25);
-        let fragment = fragment!("R1|J");
-        let input = RuleInput::new(vec![
-            RuleInputType::Union(union),
-            RuleInputType::Fragment(fragment),
-        ]);
-
-        let output_key_sequence = OutputKeySequence::new(vec![Key::KEY_DOWN.code()]);
-        let output = RuleOutput::KeySequence(output_key_sequence);
+        let input = rule_input!(union!("L1|D", "L1|F" => 25), fragment!("R1|J"));
+        let output = rule_output_sequence!(Key::KEY_DOWN.code()).to_output();
 
         let _rule = Rule::new(input, output);
     }
