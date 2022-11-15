@@ -1,4 +1,7 @@
-use crate::key_fragment::KeyFragment;
+use crate::{
+    key_fragment::KeyFragment,
+    rule::rule_input::{RuleInputType, WrapInRuleInputType},
+};
 
 #[allow(unused_macros)]
 #[macro_export]
@@ -11,7 +14,7 @@ macro_rules! union {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Union {
     members: Vec<KeyFragment>,
     interval_limit: u32,
@@ -32,6 +35,12 @@ impl Union {
     }
     pub fn set_interval_limit(&mut self, interval_limit: u32) {
         self.interval_limit = interval_limit;
+    }
+}
+
+impl WrapInRuleInputType for Union {
+    fn wrap_me_in_rule_input_type_enum(&self) -> RuleInputType {
+        RuleInputType::Union(self.clone())
     }
 }
 

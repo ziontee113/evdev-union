@@ -1,11 +1,18 @@
+#![allow(unused_macros)]
 use crate::{key_fragment::KeyFragment, union::Union};
 
 #[allow(clippy::module_name_repetitions)]
+#[derive(Debug)]
 pub enum RuleInputType {
     Fragment(KeyFragment),
     Union(Union),
 }
 
+pub trait WrapInRuleInputType {
+    fn wrap_me_in_rule_input_type_enum(&self) -> RuleInputType;
+}
+
+#[derive(Debug)]
 pub struct RuleInput {
     components: Vec<RuleInputType>,
 }
@@ -14,6 +21,12 @@ impl RuleInput {
     pub fn new(components: Vec<RuleInputType>) -> Self {
         Self { components }
     }
+}
+
+macro_rules! rule_input {
+    ($($a:expr), *) => {
+        RuleInput::new(vec![ $($a.wrap_me_in_rule_input_type_enum(),)* ])
+    };
 }
 
 #[cfg(test)]
@@ -30,5 +43,14 @@ mod test_rule_input {
             RuleInputType::Union(union),
             RuleInputType::Fragment(j_fragment),
         ]);
+    }
+
+    #[test]
+    fn rule_input_macro() {
+        let union = union!("L1|D", "L1|F");
+        let j_fragment = fragment!("R1|J");
+
+        let rule_input = rule_input!(union, j_fragment);
+        dbg!(rule_input);
     }
 }

@@ -1,4 +1,4 @@
-mod rule_input;
+pub(crate) mod rule_input;
 mod rule_output;
 use self::{rule_input::RuleInput, rule_output::RuleOutput};
 

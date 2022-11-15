@@ -1,3 +1,4 @@
+use crate::rule::rule_input::{RuleInputType, WrapInRuleInputType};
 use evdev::Key;
 use std::str::FromStr;
 
@@ -9,10 +10,16 @@ macro_rules! fragment {
     };
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct KeyFragment {
     device_alias: String,
     key_code: u16,
+}
+
+impl WrapInRuleInputType for KeyFragment {
+    fn wrap_me_in_rule_input_type_enum(&self) -> RuleInputType {
+        RuleInputType::Fragment(self.clone())
+    }
 }
 
 impl KeyFragment {
