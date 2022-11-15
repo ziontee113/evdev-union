@@ -9,6 +9,13 @@ macro_rules! union {
             $(fragment_vec.push( KeyFragment::from_str($a) );)*
             Union::new(fragment_vec, 25)
         }
+    };
+    ($($a:expr), * => $interval:expr) => {
+        {
+            let mut fragment_vec = vec![];
+            $(fragment_vec.push( KeyFragment::from_str($a) );)*
+            Union::new(fragment_vec, $interval)
+        }
     }
 }
 
@@ -68,7 +75,7 @@ mod union_test {
 
     #[test]
     fn create_union_with_macro() {
-        let union = union!("L1|D", "L1|F");
+        let union = union!("L1|D", "L1|F" => 25);
         let members = union.get_members();
 
         assert_eq!(members.get(0).unwrap().get_device_alias(), "L1");
@@ -80,7 +87,7 @@ mod union_test {
     #[test]
     fn set_interval_limit() {
         let target_interval = 40;
-        let mut union = union!("L1|D", "L1|F");
+        let mut union = union!("L1|D", "L1|F" => target_interval);
 
         union.set_interval_limit(target_interval);
         assert_eq!(union.get_interval_limit(), target_interval);

@@ -19,12 +19,12 @@ impl RuleInput {
 #[cfg(test)]
 mod test_rule_input {
     use super::*;
-    use crate::union;
+    use crate::{fragment, union};
 
     #[test]
     fn can_create_rule_input() {
         let union = union!("L1|D", "L1|F");
-        let j_fragment = KeyFragment::from_str("R1|J");
+        let j_fragment = fragment!("R1|J");
 
         let _rule_input = RuleInput::new(vec![
             RuleInputType::Union(union),

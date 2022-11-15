@@ -25,7 +25,7 @@ mod rule_test {
 
     #[test]
     fn can_create_rule() {
-        let union = union!("L1|D", "L1|F");
+        let union = union!("L1|D", "L1|F" => 25);
         let fragment = fragment!("R1|J");
         let input = RuleInput::new(vec![
             RuleInputType::Union(union),
