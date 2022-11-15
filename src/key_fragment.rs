@@ -8,6 +8,7 @@ macro_rules! fragment {
     };
 }
 
+#[derive(Debug)]
 pub struct KeyFragment {
     device_alias: String,
     key_code: u16,

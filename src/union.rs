@@ -1,5 +1,17 @@
 use crate::key_fragment::KeyFragment;
 
+#[allow(unused_macros)]
+macro_rules! union {
+    ($($a:expr), *) => {
+        {
+            let mut fragment_vec = vec![];
+            $(fragment_vec.push( KeyFragment::from_str($a) );)*
+            Union::new(fragment_vec, 25)
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct Union {
     members: Vec<KeyFragment>,
     interval_limit: u32,
@@ -18,6 +30,9 @@ impl Union {
     pub fn get_interval_limit(&self) -> u32 {
         self.interval_limit
     }
+    pub fn set_interval_limit(&mut self, interval_limit: u32) {
+        self.interval_limit = interval_limit;
+    }
 }
 
 #[cfg(test)]
@@ -25,6 +40,26 @@ mod union_test {
     use super::*;
     use crate::key_fragment::KeyFragment;
     use evdev::Key;
+
+    #[test]
+    fn create_union_with_macro() {
+        let union = union!("L1|D", "L1|F");
+        let members = union.get_members();
+
+        assert_eq!(members.get(0).unwrap().get_device_alias(), "L1");
+        assert_eq!(members.get(1).unwrap().get_device_alias(), "L1");
+        assert_eq!(members.get(0).unwrap().get_key_code(), Key::KEY_D.code());
+        assert_eq!(members.get(1).unwrap().get_key_code(), Key::KEY_F.code());
+    }
+
+    #[test]
+    fn set_interval_limit() {
+        let target_interval = 40;
+        let mut union = union!("L1|D", "L1|F");
+
+        union.set_interval_limit(target_interval);
+        assert_eq!(union.get_interval_limit(), target_interval);
+    }
 
     fn create_l1_df_union() -> Union {
         let l1_d_fragment = KeyFragment::new("L1", Key::KEY_D.code());

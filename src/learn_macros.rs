@@ -7,8 +7,21 @@ macro_rules! add {
     }
 }
 
+macro_rules! my_macro {
+    ($a:expr) => {{
+        let x = $a;
+        let mut split = x.split('|');
+        split.next().unwrap().to_owned()
+    }};
+}
+
 #[cfg(test)]
 mod test_macros {
+    #[test]
+    fn pp_macro() {
+        assert_eq!("hi", my_macro!("hi|hello"));
+    }
+
     #[test]
     fn variable_args_add() {
         let result = add![1, 9];
