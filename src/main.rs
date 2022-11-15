@@ -1,4 +1,4 @@
-// #![warn(clippy::pedantic)]
+#![warn(clippy::pedantic)]
 #![allow(dead_code)]
 #![allow(clippy::vec_init_then_push)]
 
