@@ -11,13 +11,26 @@ impl RuleSet {
         Self { rules }
     }
     fn generate_union_hash_map(&self) -> HashMap<String, u32> {
-        let map = HashMap::new();
+        let mut map = HashMap::new();
 
         for rule in &self.rules {
             let rule_input_components = rule.input().components();
             for component in rule_input_components {
                 if let RuleInputType::Union(union) = component {
-                    dbg!(union);
+                    for member in union.get_members() {
+                        let key = member.to_string();
+                        let interval = union.get_interval_limit();
+                        match map.get(&key) {
+                            Some(current_inverval) => {
+                                if union.get_interval_limit() > *current_inverval {
+                                    *map.get_mut(&key).unwrap() = interval;
+                                }
+                            }
+                            None => {
+                                map.insert(key, interval);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -49,5 +62,7 @@ mod rule_set_test {
 
         let ruleset = RuleSet::new(vec![first_rule, second_rule]);
         let union_hashmap = ruleset.generate_union_hash_map();
+
+        dbg!(union_hashmap);
     }
 }
