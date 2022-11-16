@@ -53,10 +53,21 @@ mod rule_set_test {
             rule_input!(fragment!("L1|LEFTCTRL"), fragment!("R1|J")),
             rule_output_sequence!(Key::KEY_DOWN.code()).to_output()
         );
+        let third_rule = rule!(
+            rule_input!(union!("L1|SPACE", "L1|V"), fragment!("R1|K")),
+            rule_output_sequence!(Key::KEY_UP.code()).to_output()
+        );
+        let fourth_rule = rule!(
+            rule_input!(union!("L1|D", "L1|F" => 40), fragment!("R1|K")),
+            rule_output_sequence!(Key::KEY_UP.code()).to_output()
+        );
 
-        let ruleset = RuleSet::new(vec![first_rule, second_rule]);
+        let ruleset = RuleSet::new(vec![first_rule, second_rule, third_rule, fourth_rule]);
         let union_hashmap = ruleset.generate_union_hash_map();
 
-        dbg!(union_hashmap);
+        dbg!(&union_hashmap);
+        assert!(union_hashmap.contains_key("L1|D L1|F"));
+        assert!(union_hashmap.contains_key("L1|SPACE L1|V"));
+        assert_eq!(*union_hashmap.get("L1|D L1|F").unwrap(), 40);
     }
 }
