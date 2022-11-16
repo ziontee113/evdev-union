@@ -24,12 +24,14 @@ pub struct Union {
 
 impl Display for Union {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut final_string = String::from("");
-        for member in &self.members {
-            final_string = format!("{} {}", final_string.trim(), member);
+        let mut iter = self.members.iter();
+        if let Some(member) = iter.next() {
+            write!(f, "{member}")?;
         }
-
-        write!(f, "{}", final_string)
+        for member in iter {
+            write!(f, " {}", member)?;
+        }
+        Ok(())
     }
 }
 
