@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::{
     key_fragment::KeyFragment,
     rule::rule_input::{RuleInputType, WrapInRuleInputType},
@@ -18,6 +20,17 @@ macro_rules! union {
 pub struct Union {
     members: Vec<KeyFragment>,
     interval_limit: u32,
+}
+
+impl Display for Union {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut final_string = String::from("");
+        for member in &self.members {
+            final_string = format!("{} {}", final_string.trim(), member);
+        }
+
+        write!(f, "{}", final_string)
+    }
 }
 
 impl Union {
