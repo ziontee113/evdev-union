@@ -13,6 +13,12 @@ impl Rule {
     pub fn new(input: RuleInput, output: RuleOutput) -> Self {
         Self { input, output }
     }
+    pub fn input(&self) -> RuleInput {
+        self.input.clone()
+    }
+    pub fn output(&self) -> RuleOutput {
+        self.output.clone()
+    }
 }
 
 #[macro_export]

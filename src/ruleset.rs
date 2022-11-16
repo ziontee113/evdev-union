@@ -1,4 +1,6 @@
-use crate::rule::Rule;
+use std::collections::HashMap;
+
+use crate::rule::{rule_input::RuleInputType, Rule};
 
 pub struct RuleSet {
     rules: Vec<Rule>,
@@ -8,32 +10,44 @@ impl RuleSet {
     pub fn new(rules: Vec<Rule>) -> Self {
         Self { rules }
     }
+    fn generate_union_hash_map(&self) -> HashMap<String, u32> {
+        let map = HashMap::new();
+
+        for rule in &self.rules {
+            let rule_input_components = rule.input().components();
+            for component in rule_input_components {
+                if let RuleInputType::Union(union) = component {
+                    dbg!(union);
+                }
+            }
+        }
+        map
+    }
 }
 
 #[cfg(test)]
 mod rule_set_test {
-
-    use evdev::Key;
-
+    use super::{Rule, RuleSet};
     use crate::key_fragment::KeyFragment;
     use crate::rule::rule_input::{RuleInput, WrapInRuleInputType};
     use crate::rule::rule_output::{OutputKeySequence, WrapMeInRuleOutput};
-    use crate::{fragment, rule};
-    use crate::{rule_input, rule_output_sequence};
-
-    use super::*;
+    use crate::union::Union;
+    use crate::{fragment, rule, rule_input, rule_output_sequence, union};
+    use evdev::Key;
+    // TODO: look into Rust auto import, or alternatives, this is a mess!
 
     #[test]
-    fn can_create_ruleset() {
+    fn can_create_union_hashmap() {
         let first_rule = rule!(
-            rule_input!(fragment!("L1|R"), fragment!("R1|J")),
-            rule_output_sequence!(Key::KEY_F12.code(), Key::KEY_J.code()).to_output()
+            rule_input!(union!("L1|D", "L1|F"), fragment!("R1|J")),
+            rule_output_sequence!(Key::KEY_A.code()).to_output()
         );
         let second_rule = rule!(
             rule_input!(fragment!("L1|LEFTCTRL"), fragment!("R1|J")),
             rule_output_sequence!(Key::KEY_DOWN.code()).to_output()
         );
 
-        let _ruleset = RuleSet::new(vec![first_rule, second_rule]);
+        let ruleset = RuleSet::new(vec![first_rule, second_rule]);
+        let union_hashmap = ruleset.generate_union_hash_map();
     }
 }

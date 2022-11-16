@@ -1,6 +1,9 @@
-use crate::rule::rule_input::{RuleInputType, WrapInRuleInputType};
+use crate::{
+    keycodes::KEY_COLLECTION,
+    rule::rule_input::{RuleInputType, WrapInRuleInputType},
+};
 use evdev::Key;
-use std::str::FromStr;
+use std::{fmt::Display, str::FromStr};
 
 #[allow(unused_macros)]
 #[macro_export]
@@ -40,6 +43,17 @@ impl KeyFragment {
             device_alias,
             key_code,
         }
+    }
+}
+
+impl Display for KeyFragment {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}|{}",
+            self.device_alias,
+            (*KEY_COLLECTION.get(usize::from(self.key_code)).unwrap())
+        )
     }
 }
 
@@ -85,5 +99,11 @@ mod key_fragment_test {
         let fragment = fragment!("L1|D");
         assert_eq!("L1", fragment.get_device_alias());
         assert_eq!(Key::KEY_D.code(), fragment.get_key_code());
+    }
+
+    #[test]
+    fn to_string() {
+        let result = fragment!("L1|D").to_string();
+        assert_eq!("L1|D".to_string(), result);
     }
 }

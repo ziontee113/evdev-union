@@ -42,7 +42,7 @@ impl WrapMeInRuleOutput for OutputKeySequence {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum RuleOutput {
     Command(OutputCommand),
     KeySequence(OutputKeySequence),

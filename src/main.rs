@@ -7,6 +7,7 @@ mod learn_macros;
 mod rule;
 mod ruleset;
 mod union;
+mod keycodes;
 
 fn main() {
     println!("Hello, world!");

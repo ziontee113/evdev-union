@@ -2,7 +2,7 @@
 use crate::{key_fragment::KeyFragment, union::Union};
 
 #[allow(clippy::module_name_repetitions)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum RuleInputType {
     Fragment(KeyFragment),
     Union(Union),
@@ -12,7 +12,7 @@ pub trait WrapInRuleInputType {
     fn wrap_me_in_rule_input_type_enum(&self) -> RuleInputType;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct RuleInput {
     components: Vec<RuleInputType>,
 }
@@ -20,6 +20,9 @@ pub struct RuleInput {
 impl RuleInput {
     pub fn new(components: Vec<RuleInputType>) -> Self {
         Self { components }
+    }
+    pub fn components(&self) -> Vec<RuleInputType> {
+        self.components.clone()
     }
 }
 
