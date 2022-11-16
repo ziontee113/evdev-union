@@ -4,31 +4,34 @@ use crate::rule::{rule_input::RuleInputType, Rule};
 
 pub struct RuleSet {
     rules: Vec<Rule>,
+    union_hash_map: HashMap<String, u32>,
 }
 
 impl RuleSet {
     pub fn new(rules: Vec<Rule>) -> Self {
-        Self { rules }
-    }
-    fn generate_union_hash_map(&self) -> HashMap<String, u32> {
-        let mut map = HashMap::new();
-
-        self.rules.iter().for_each(|rule| {
+        let mut union_hash_map = HashMap::new();
+        for rule in &rules {
             rule.input().components().into_iter().for_each(|component| {
                 if let RuleInputType::Union(union) = component {
                     let key = union.to_string();
                     let interval = union.get_interval_limit();
 
-                    map.entry(key)
+                    union_hash_map
+                        .entry(key)
                         .and_modify(|cur_interval| {
                             *cur_interval = cmp::max(*cur_interval, interval);
                         })
                         .or_insert(interval);
                 }
             });
-        });
-
-        map
+        }
+        Self {
+            rules,
+            union_hash_map,
+        }
+    }
+    fn get_union_hash_map(&self) -> &HashMap<String, u32> {
+        &self.union_hash_map
     }
 }
 
@@ -63,8 +66,8 @@ mod rule_set_test {
         );
 
         let ruleset = RuleSet::new(vec![first_rule, second_rule, third_rule, fourth_rule]);
-        let union_hashmap = ruleset.generate_union_hash_map();
 
+        let union_hashmap = ruleset.get_union_hash_map();
         dbg!(&union_hashmap);
         assert!(union_hashmap.contains_key("L1|D L1|F"));
         assert!(union_hashmap.contains_key("L1|SPACE L1|V"));
