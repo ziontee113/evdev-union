@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{cmp, collections::HashMap};
 
 use crate::rule::{rule_input::RuleInputType, Rule};
 
@@ -13,27 +13,21 @@ impl RuleSet {
     fn generate_union_hash_map(&self) -> HashMap<String, u32> {
         let mut map = HashMap::new();
 
-        for rule in &self.rules {
-            let rule_input_components = rule.input().components();
-            for component in rule_input_components {
+        self.rules.iter().for_each(|rule| {
+            rule.input().components().into_iter().for_each(|component| {
                 if let RuleInputType::Union(union) = component {
-                    for member in union.get_members() {
-                        let key = member.to_string();
-                        let interval = union.get_interval_limit();
-                        match map.get(&key) {
-                            Some(current_inverval) => {
-                                if union.get_interval_limit() > *current_inverval {
-                                    *map.get_mut(&key).unwrap() = interval;
-                                }
-                            }
-                            None => {
-                                map.insert(key, interval);
-                            }
-                        }
-                    }
+                    let key = union.to_string();
+                    let interval = union.get_interval_limit();
+
+                    map.entry(key)
+                        .and_modify(|cur_interval| {
+                            *cur_interval = cmp::max(*cur_interval, interval);
+                        })
+                        .or_insert(interval);
                 }
-            }
-        }
+            });
+        });
+
         map
     }
 }
