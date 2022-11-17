@@ -9,10 +9,10 @@ use crate::{
 #[macro_export]
 macro_rules! union {
     ($($a:expr), *) => {
-        Union::new(vec![ $( KeyFragment::from_str($a), )* ], 25)
+        Union::new(&mut [ $( KeyFragment::from_str($a), )* ], 25)
     };
     ($($a:expr), * => $interval:expr) => {
-        Union::new(vec![ $( KeyFragment::from_str($a), )* ], $interval)
+        Union::new(&mut [ $( KeyFragment::from_str($a), )* ], $interval)
     }
 }
 
@@ -23,9 +23,16 @@ pub struct Union {
 }
 
 impl Union {
-    pub fn new(members: Vec<KeyFragment>, interval_limit: u32) -> Self {
+    fn sort_members(members: &mut [KeyFragment]) -> Vec<KeyFragment> {
+        members.sort();
+        members.to_owned()
+    }
+}
+
+impl Union {
+    pub fn new(members: &mut [KeyFragment], interval_limit: u32) -> Self {
         Self {
-            members,
+            members: Union::sort_members(members),
             interval_limit,
         }
     }
@@ -62,7 +69,7 @@ impl WrapInRuleInputType for Union {
 #[cfg(test)]
 mod union_test {
     use super::*;
-    use crate::key_fragment::KeyFragment;
+    use crate::{fragment, key_fragment::KeyFragment};
     use evdev::Key;
 
     #[test]
@@ -89,5 +96,26 @@ mod union_test {
 
         union.set_interval_limit(target_interval);
         assert_eq!(union.get_interval_limit(), target_interval);
+    }
+
+    #[test]
+    fn can_sort_union_members() {
+        let mut fragments = vec![
+            fragment!("L1|F"),
+            fragment!("L1|D"),
+            fragment!("R1|K"),
+            fragment!("R1|J"),
+        ];
+        let sorted = Union::sort_members(&mut fragments);
+
+        assert_eq!(
+            sorted,
+            vec![
+                fragment!("L1|D"),
+                fragment!("L1|F"),
+                fragment!("R1|J"),
+                fragment!("R1|K"),
+            ]
+        );
     }
 }

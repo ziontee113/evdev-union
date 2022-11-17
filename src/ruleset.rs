@@ -99,6 +99,7 @@ mod rule_set_test {
     fn can_get_union_interval_hash_map_from_ruleset() {
         let ruleset = create_mock_ruleset();
         let union_interval_hash_map = ruleset.get_union_hash_map();
+
         assert!(union_interval_hash_map.contains_key("L1|D L1|F"));
         assert!(union_interval_hash_map.contains_key("L1|SPACE L1|V"));
         assert_eq!(*union_interval_hash_map.get("L1|D L1|F").unwrap(), 40);
@@ -113,7 +114,5 @@ mod rule_set_test {
         assert!(rules_hash_map.contains_key("L1|LEFTCTRL, R1|J"));
         assert!(rules_hash_map.contains_key("L1|SPACE L1|V, R1|K"));
         assert!(rules_hash_map.contains_key("L1|D L1|F, R1|K"));
-
-        dbg!(rules_hash_map);
     }
 }

@@ -13,7 +13,7 @@ macro_rules! fragment {
     };
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct KeyFragment {
     device_alias: String,
     key_code: u16,
