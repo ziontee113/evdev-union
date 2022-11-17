@@ -1,4 +1,13 @@
 #![allow(unused_macros, clippy::module_name_repetitions)]
+#[derive(Debug, Clone)]
+pub enum RuleOutput {
+    Command(OutputCommand),
+    KeySequence(OutputKeySequence),
+}
+
+pub trait WrapMeInRuleOutput {
+    fn to_output(&self) -> RuleOutput;
+}
 
 #[derive(Debug, Clone)]
 pub struct OutputCommand {
@@ -11,7 +20,7 @@ impl OutputCommand {
             command: command.to_string(),
         }
     }
-    pub fn command(&self) -> String {
+    pub fn get_command(&self) -> String {
         self.command.to_string()
     }
 }
@@ -42,16 +51,6 @@ impl WrapMeInRuleOutput for OutputKeySequence {
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum RuleOutput {
-    Command(OutputCommand),
-    KeySequence(OutputKeySequence),
-}
-
-pub trait WrapMeInRuleOutput {
-    fn to_output(&self) -> RuleOutput;
-}
-
 #[macro_export]
 macro_rules! rule_output_cmd {
     ($a:expr) => {
@@ -72,39 +71,19 @@ mod test_rule_output {
     use evdev::Key;
 
     #[test]
-    fn can_create_rule_output_command() {
-        let output_command = OutputCommand::new("firefox");
-        let rule_output = RuleOutput::Command(output_command);
-
-        if let RuleOutput::Command(output_command) = rule_output {
-            println!("command = {}", output_command.command());
-        }
-    }
-
-    #[test]
-    fn can_create_rule_output_key_sequence() {
-        let output_key_sequence = OutputKeySequence::new(vec![Key::KEY_DOWN.code()]);
-        let rule_output = RuleOutput::KeySequence(output_key_sequence);
-
-        if let RuleOutput::KeySequence(output_command) = rule_output {
-            println!("key_sequence = {:?}", output_command.get_sequence());
-        }
-    }
-
-    #[test]
-    fn rule_output_cmd_macro() {
+    fn can_create_rule_output_cmd_with_macro() {
         let output_command = rule_output_cmd!("firefox");
-        assert_eq!("firefox", output_command.command());
+        assert_eq!("firefox", output_command.get_command());
     }
 
     #[test]
-    fn rule_output_sequence_macro() {
+    fn can_create_rule_output_sequence_with_macro() {
         let _output_sequence =
             rule_output_sequence!(Key::KEY_LEFTCTRL.code(), Key::KEY_DOWN.code());
     }
 
     #[test]
-    fn to_output_methods() {
+    fn can_wrap_in_rule_output() {
         let _cmd_rule_output = rule_output_cmd!("firefox").to_output();
         let _key_sequence_rule_output = rule_output_sequence!(Key::KEY_DOWN.code()).to_output();
     }

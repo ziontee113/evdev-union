@@ -4,13 +4,15 @@ use crate::rule::{rule_input::RuleInputType, Rule};
 
 #[derive(Debug)]
 pub struct RuleSet {
+    name: String,
     rules: Vec<Rule>,
     union_hash_map: HashMap<String, u32>,
 }
 
 impl RuleSet {
-    pub fn new(rules: Vec<Rule>) -> Self {
+    pub fn new(name: &str, rules: Vec<Rule>) -> Self {
         Self {
+            name: name.to_string(),
             union_hash_map: RuleSet::create_union_hash_map(&rules),
             rules,
         }
@@ -74,7 +76,10 @@ mod rule_set_test {
             rule_output_sequence!(Key::KEY_UP.code()).to_output()
         );
 
-        let ruleset = RuleSet::new(vec![first_rule, second_rule, third_rule, fourth_rule]);
+        let ruleset = RuleSet::new(
+            "Base RuleSet",
+            vec![first_rule, second_rule, third_rule, fourth_rule],
+        );
 
         let union_hashmap = ruleset.get_union_hash_map();
         assert!(union_hashmap.contains_key("L1|D L1|F"));
