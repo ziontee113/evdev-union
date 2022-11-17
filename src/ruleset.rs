@@ -2,15 +2,16 @@ use std::{cmp, collections::HashMap};
 
 use crate::rule::{rule_input::RuleInputType, Rule};
 
+#[derive(Debug)]
 pub struct RuleSet {
     rules: Vec<Rule>,
     union_hash_map: HashMap<String, u32>,
 }
 
 impl RuleSet {
-    pub fn new(rules: Vec<Rule>) -> Self {
+    fn create_union_hash_map(rules: &Vec<Rule>) -> HashMap<String, u32> {
         let mut union_hash_map = HashMap::new();
-        for rule in &rules {
+        for rule in rules {
             rule.input().components().into_iter().for_each(|component| {
                 if let RuleInputType::Union(union) = component {
                     let key = union.to_string();
@@ -25,9 +26,15 @@ impl RuleSet {
                 }
             });
         }
+        union_hash_map
+    }
+}
+
+impl RuleSet {
+    pub fn new(rules: Vec<Rule>) -> Self {
         Self {
+            union_hash_map: RuleSet::create_union_hash_map(&rules),
             rules,
-            union_hash_map,
         }
     }
     fn get_union_hash_map(&self) -> &HashMap<String, u32> {
@@ -44,10 +51,9 @@ mod rule_set_test {
     use crate::union::Union;
     use crate::{fragment, rule, rule_input, rule_output_sequence, union};
     use evdev::Key;
-    // TODO: look into Rust auto import, or alternatives, this is a mess!
 
     #[test]
-    fn can_create_union_hashmap() {
+    fn can_create_ruleset() {
         let first_rule = rule!(
             rule_input!(union!("L1|D", "L1|F"), fragment!("R1|J")),
             rule_output_sequence!(Key::KEY_A.code()).to_output()
@@ -68,9 +74,10 @@ mod rule_set_test {
         let ruleset = RuleSet::new(vec![first_rule, second_rule, third_rule, fourth_rule]);
 
         let union_hashmap = ruleset.get_union_hash_map();
-        dbg!(&union_hashmap);
         assert!(union_hashmap.contains_key("L1|D L1|F"));
         assert!(union_hashmap.contains_key("L1|SPACE L1|V"));
         assert_eq!(*union_hashmap.get("L1|D L1|F").unwrap(), 40);
+
+        dbg!(&ruleset);
     }
 }

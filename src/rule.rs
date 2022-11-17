@@ -4,6 +4,7 @@ pub(crate) mod rule_input;
 pub(crate) mod rule_output;
 use self::{rule_input::RuleInput, rule_output::RuleOutput};
 
+#[derive(Debug)]
 pub struct Rule {
     input: RuleInput,
     output: RuleOutput,

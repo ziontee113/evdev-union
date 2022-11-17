@@ -1,4 +1,6 @@
 #![allow(unused_macros)]
+use std::fmt::Display;
+
 use crate::{key_fragment::KeyFragment, union::Union};
 
 #[allow(clippy::module_name_repetitions)]
@@ -15,6 +17,25 @@ pub trait WrapInRuleInputType {
 #[derive(Debug, Clone)]
 pub struct RuleInput {
     components: Vec<RuleInputType>,
+}
+
+impl Display for RuleInput {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut iter = self.components.iter();
+        if let Some(component) = iter.next() {
+            match component {
+                RuleInputType::Fragment(value) => write!(f, "{value}")?,
+                RuleInputType::Union(value) => write!(f, "{value}")?,
+            }
+        }
+        for component in iter {
+            match component {
+                RuleInputType::Fragment(value) => write!(f, ", {value}")?,
+                RuleInputType::Union(value) => write!(f, ", {value}")?,
+            }
+        }
+        Ok(())
+    }
 }
 
 impl RuleInput {
@@ -59,5 +80,18 @@ mod test_rule_input {
 
         let rule_input_2 = rule_input!(union!("L1|D", "L1|F", "L1|S"), fragment!("R1|K"));
         dbg!(rule_input_2);
+    }
+
+    #[test]
+    fn can_to_string() {
+        assert_eq!(
+            "L1|D L1|F, R1|J",
+            rule_input!(union!("L1|D", "L1|F"), fragment!("R1|J")).to_string()
+        );
+
+        assert_eq!(
+            "L1|LEFTCTRL, R1|J",
+            rule_input!(union!("L1|LEFTCTRL"), fragment!("R1|J")).to_string()
+        );
     }
 }
