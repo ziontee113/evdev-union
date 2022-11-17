@@ -2,6 +2,7 @@
 #![allow(dead_code)]
 
 mod devices;
+mod input;
 mod interceptor;
 mod key_fragment;
 mod keycodes;
