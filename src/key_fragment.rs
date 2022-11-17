@@ -76,33 +76,31 @@ mod key_fragment_test {
     }
 
     #[test]
-    fn get_device_alias() {
-        let l1_a_fragment = create_l1_a_fragment();
-        assert_eq!(l1_a_fragment.get_device_alias(), "L1".to_string());
+    fn can_get_device_alias() {
+        assert_eq!(create_l1_a_fragment().get_device_alias(), "L1".to_string());
     }
 
     #[test]
-    fn get_key_code() {
-        let l1_a_fragment = create_l1_a_fragment();
-        assert_eq!(l1_a_fragment.get_key_code(), Key::KEY_A.code());
+    fn can_get_key_code() {
+        assert_eq!(create_l1_a_fragment().get_key_code(), Key::KEY_A.code());
     }
 
     #[test]
-    fn fragment_from_str() {
+    fn can_create_fragment_from_str() {
         let fragment = KeyFragment::from_str("L1|D");
         assert_eq!("L1", fragment.get_device_alias());
         assert_eq!(Key::KEY_D.code(), fragment.get_key_code());
     }
 
     #[test]
-    fn fragment_macro() {
+    fn can_create_fragment_from_macro() {
         let fragment = fragment!("L1|D");
         assert_eq!("L1", fragment.get_device_alias());
         assert_eq!(Key::KEY_D.code(), fragment.get_key_code());
     }
 
     #[test]
-    fn to_string() {
+    fn can_turn_fragment_to_string() {
         let result = fragment!("L1|D").to_string();
         assert_eq!("L1|D".to_string(), result);
     }

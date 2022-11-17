@@ -71,19 +71,7 @@ mod test_rule_input {
     }
 
     #[test]
-    fn rule_input_macro() {
-        let union = union!("L1|D", "L1|F");
-        let j_fragment = fragment!("R1|J");
-
-        let rule_input = rule_input!(union, j_fragment);
-        dbg!(rule_input);
-
-        let rule_input_2 = rule_input!(union!("L1|D", "L1|F", "L1|S"), fragment!("R1|K"));
-        dbg!(rule_input_2);
-    }
-
-    #[test]
-    fn can_to_string() {
+    fn can_turn_rule_input_to_string() {
         assert_eq!(
             "L1|D L1|F, R1|J",
             rule_input!(union!("L1|D", "L1|F"), fragment!("R1|J")).to_string()
