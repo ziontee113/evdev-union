@@ -4,7 +4,6 @@
 
 mod key_fragment;
 mod keycodes;
-mod learn_macros;
 mod rule;
 mod ruleset;
 mod union;

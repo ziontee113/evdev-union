@@ -19,12 +19,6 @@ pub struct KeyFragment {
     key_code: u16,
 }
 
-impl WrapInRuleInputType for KeyFragment {
-    fn wrap_me_in_rule_input_type_enum(&self) -> RuleInputType {
-        RuleInputType::Fragment(self.clone())
-    }
-}
-
 impl KeyFragment {
     pub fn new(deivice_alias: &str, key_code: u16) -> Self {
         Self {
@@ -46,6 +40,15 @@ impl KeyFragment {
     }
 }
 
+impl KeyFragment {
+    pub fn get_device_alias(&self) -> String {
+        self.device_alias.to_string()
+    }
+    pub fn get_key_code(&self) -> u16 {
+        self.key_code
+    }
+}
+
 impl Display for KeyFragment {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -57,12 +60,9 @@ impl Display for KeyFragment {
     }
 }
 
-impl KeyFragment {
-    pub fn get_device_alias(&self) -> String {
-        self.device_alias.to_string()
-    }
-    pub fn get_key_code(&self) -> u16 {
-        self.key_code
+impl WrapInRuleInputType for KeyFragment {
+    fn wrap_me_in_rule_input_type_enum(&self) -> RuleInputType {
+        RuleInputType::Fragment(self.clone())
     }
 }
 

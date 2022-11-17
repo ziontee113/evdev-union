@@ -9,28 +9,6 @@ pub struct RuleSet {
 }
 
 impl RuleSet {
-    fn create_union_hash_map(rules: &Vec<Rule>) -> HashMap<String, u32> {
-        let mut union_hash_map = HashMap::new();
-        for rule in rules {
-            rule.input().components().into_iter().for_each(|component| {
-                if let RuleInputType::Union(union) = component {
-                    let key = union.to_string();
-                    let interval = union.get_interval_limit();
-
-                    union_hash_map
-                        .entry(key)
-                        .and_modify(|cur_interval| {
-                            *cur_interval = cmp::max(*cur_interval, interval);
-                        })
-                        .or_insert(interval);
-                }
-            });
-        }
-        union_hash_map
-    }
-}
-
-impl RuleSet {
     pub fn new(rules: Vec<Rule>) -> Self {
         Self {
             union_hash_map: RuleSet::create_union_hash_map(&rules),
@@ -39,6 +17,31 @@ impl RuleSet {
     }
     fn get_union_hash_map(&self) -> &HashMap<String, u32> {
         &self.union_hash_map
+    }
+}
+
+impl RuleSet {
+    fn create_union_hash_map(rules: &Vec<Rule>) -> HashMap<String, u32> {
+        let mut union_hash_map = HashMap::new();
+        for rule in rules {
+            rule.get_input()
+                .components()
+                .into_iter()
+                .for_each(|component| {
+                    if let RuleInputType::Union(union) = component {
+                        let key = union.to_string();
+                        let interval = union.get_interval_limit();
+
+                        union_hash_map
+                            .entry(key)
+                            .and_modify(|cur_interval| {
+                                *cur_interval = cmp::max(*cur_interval, interval);
+                            })
+                            .or_insert(interval);
+                    }
+                });
+        }
+        union_hash_map
     }
 }
 

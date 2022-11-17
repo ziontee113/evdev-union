@@ -22,19 +22,6 @@ pub struct Union {
     interval_limit: u32,
 }
 
-impl Display for Union {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut iter = self.members.iter();
-        if let Some(member) = iter.next() {
-            write!(f, "{member}")?;
-        }
-        for member in iter {
-            write!(f, " {}", member)?;
-        }
-        Ok(())
-    }
-}
-
 impl Union {
     pub fn new(members: Vec<KeyFragment>, interval_limit: u32) -> Self {
         Self {
@@ -50,6 +37,19 @@ impl Union {
     }
     pub fn set_interval_limit(&mut self, interval_limit: u32) {
         self.interval_limit = interval_limit;
+    }
+}
+
+impl Display for Union {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut iter = self.members.iter();
+        if let Some(member) = iter.next() {
+            write!(f, "{member}")?;
+        }
+        for member in iter {
+            write!(f, " {}", member)?;
+        }
+        Ok(())
     }
 }
 

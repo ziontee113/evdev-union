@@ -19,6 +19,15 @@ pub struct RuleInput {
     components: Vec<RuleInputType>,
 }
 
+impl RuleInput {
+    pub fn new(components: Vec<RuleInputType>) -> Self {
+        Self { components }
+    }
+    pub fn components(&self) -> Vec<RuleInputType> {
+        self.components.clone()
+    }
+}
+
 impl Display for RuleInput {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut iter = self.components.iter();
@@ -35,15 +44,6 @@ impl Display for RuleInput {
             }
         }
         Ok(())
-    }
-}
-
-impl RuleInput {
-    pub fn new(components: Vec<RuleInputType>) -> Self {
-        Self { components }
-    }
-    pub fn components(&self) -> Vec<RuleInputType> {
-        self.components.clone()
     }
 }
 

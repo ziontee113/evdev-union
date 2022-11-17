@@ -14,10 +14,10 @@ impl Rule {
     pub fn new(input: RuleInput, output: RuleOutput) -> Self {
         Self { input, output }
     }
-    pub fn input(&self) -> RuleInput {
+    pub fn get_input(&self) -> RuleInput {
         self.input.clone()
     }
-    pub fn output(&self) -> RuleOutput {
+    pub fn get_output(&self) -> RuleOutput {
         self.output.clone()
     }
 }
@@ -51,7 +51,7 @@ mod rule_test {
     }
 
     #[test]
-    fn create_rule_with_macro() {
+    fn can_create_rule_with_macro() {
         let _rule = rule!(
             rule_input!(fragment!("L1|R"), fragment!("R1|J")),
             rule_output_sequence!(Key::KEY_F12.code(), Key::KEY_J.code()).to_output()
