@@ -71,7 +71,7 @@ mod rule_set_test {
     use crate::{fragment, rule, rule_input, rule_output_cmd, rule_output_sequence, union};
     use evdev::Key;
 
-    fn create_ruleset() -> RuleSet {
+    fn create_mock_ruleset() -> RuleSet {
         let first_rule = rule!(
             rule_input!(union!("L1|D", "L1|F"), fragment!("R1|J")),
             rule_output_cmd!("firefox").to_output()
@@ -97,7 +97,7 @@ mod rule_set_test {
 
     #[test]
     fn can_get_union_interval_hash_map_from_ruleset() {
-        let ruleset = create_ruleset();
+        let ruleset = create_mock_ruleset();
         let union_interval_hash_map = ruleset.get_union_hash_map();
         assert!(union_interval_hash_map.contains_key("L1|D L1|F"));
         assert!(union_interval_hash_map.contains_key("L1|SPACE L1|V"));
@@ -106,8 +106,13 @@ mod rule_set_test {
 
     #[test]
     fn can_get_rules_hash_map_from_ruleset() {
-        let ruleset = create_ruleset();
+        let ruleset = create_mock_ruleset();
         let rules_hash_map = ruleset.get_rules_hash_map();
+
+        assert!(rules_hash_map.contains_key("L1|D L1|F, R1|J"));
+        assert!(rules_hash_map.contains_key("L1|LEFTCTRL, R1|J"));
+        assert!(rules_hash_map.contains_key("L1|SPACE L1|V, R1|K"));
+        assert!(rules_hash_map.contains_key("L1|D L1|F, R1|K"));
 
         dbg!(rules_hash_map);
     }
