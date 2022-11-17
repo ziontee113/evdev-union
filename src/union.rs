@@ -8,10 +8,10 @@ use crate::{
 #[allow(unused_macros)]
 #[macro_export]
 macro_rules! union {
-    ($($a:expr), *) => {
+    ($($a:expr) *) => {
         Union::new(&mut [ $( KeyFragment::from_str($a), )* ], 25)
     };
-    ($($a:expr), * => $interval:expr) => {
+    ($($a:expr) * => $interval:expr) => {
         Union::new(&mut [ $( KeyFragment::from_str($a), )* ], $interval)
     }
 }
@@ -74,7 +74,7 @@ mod union_test {
 
     #[test]
     fn create_union_with_macro() {
-        let union = union!("L1|D", "L1|F" => 25);
+        let union = union!("L1|D" "L1|F" => 25);
         let members = union.get_members();
 
         assert_eq!(members.get(0).unwrap().get_device_alias(), "L1");
@@ -85,14 +85,14 @@ mod union_test {
 
     #[test]
     fn can_get_interval_limit() {
-        let union = union!("L1|D", "L1|F" => 30);
+        let union = union!("L1|D" "L1|F" => 30);
         assert_eq!(union.get_interval_limit(), 30);
     }
 
     #[test]
     fn can_set_interval_limit() {
         let target_interval = 40;
-        let mut union = union!("L1|D", "L1|F" => target_interval);
+        let mut union = union!("L1|D" "L1|F" => target_interval);
 
         union.set_interval_limit(target_interval);
         assert_eq!(union.get_interval_limit(), target_interval);

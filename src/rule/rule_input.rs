@@ -61,7 +61,7 @@ mod test_rule_input {
 
     #[test]
     fn can_create_rule_input() {
-        let union = union!("L1|D", "L1|F");
+        let union = union!("L1|D" "L1|F");
         let j_fragment = fragment!("R1|J");
 
         let _rule_input = RuleInput::new(vec![
@@ -74,7 +74,7 @@ mod test_rule_input {
     fn can_turn_rule_input_to_string() {
         assert_eq!(
             "L1|D L1|F, R1|J",
-            rule_input!(union!("L1|D", "L1|F"), fragment!("R1|J")).to_string()
+            rule_input!(union!("L1|D" "L1|F"), fragment!("R1|J")).to_string()
         );
 
         assert_eq!(

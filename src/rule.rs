@@ -44,7 +44,7 @@ mod rule_test {
 
     #[test]
     fn can_create_rule() {
-        let input = rule_input!(union!("L1|D", "L1|F" => 25), fragment!("R1|J"));
+        let input = rule_input!(union!("L1|D" "L1|F" => 25), fragment!("R1|J"));
         let output = rule_output_sequence!(Key::KEY_DOWN.code()).to_output();
 
         let _rule = Rule::new(input, output);

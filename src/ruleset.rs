@@ -73,7 +73,7 @@ mod rule_set_test {
 
     fn create_mock_ruleset() -> RuleSet {
         let first_rule = rule!(
-            rule_input!(union!("L1|D", "L1|F"), fragment!("R1|J")),
+            rule_input!(union!("L1|D" "L1|F"), fragment!("R1|J")),
             rule_output_cmd!("firefox").to_output()
         );
         let second_rule = rule!(
@@ -81,11 +81,11 @@ mod rule_set_test {
             rule_output_sequence!(Key::KEY_DOWN.code()).to_output()
         );
         let third_rule = rule!(
-            rule_input!(union!("L1|SPACE", "L1|V"), fragment!("R1|K")),
+            rule_input!(union!("L1|SPACE" "L1|V"), fragment!("R1|K")),
             rule_output_sequence!(Key::KEY_UP.code()).to_output()
         );
         let fourth_rule = rule!(
-            rule_input!(union!("L1|D", "L1|F" => 40), fragment!("R1|K")),
+            rule_input!(union!("L1|F" "L1|D" => 40), fragment!("R1|K")),
             rule_output_sequence!(Key::KEY_UP.code()).to_output()
         );
 
@@ -101,7 +101,7 @@ mod rule_set_test {
         let union_interval_hash_map = ruleset.get_union_hash_map();
 
         assert!(union_interval_hash_map.contains_key("L1|D L1|F"));
-        assert!(union_interval_hash_map.contains_key("L1|SPACE L1|V"));
+        assert!(union_interval_hash_map.contains_key("L1|V L1|SPACE"));
         assert_eq!(*union_interval_hash_map.get("L1|D L1|F").unwrap(), 40);
     }
 
@@ -112,7 +112,7 @@ mod rule_set_test {
 
         assert!(rules_hash_map.contains_key("L1|D L1|F, R1|J"));
         assert!(rules_hash_map.contains_key("L1|LEFTCTRL, R1|J"));
-        assert!(rules_hash_map.contains_key("L1|SPACE L1|V, R1|K"));
+        assert!(rules_hash_map.contains_key("L1|V L1|SPACE, R1|K"));
         assert!(rules_hash_map.contains_key("L1|D L1|F, R1|K"));
     }
 }
