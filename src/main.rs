@@ -2,6 +2,7 @@
 #![allow(dead_code)]
 #![allow(clippy::vec_init_then_push)]
 
+mod devices;
 mod key_fragment;
 mod keycodes;
 mod rule;
@@ -10,4 +11,5 @@ mod union;
 
 fn main() {
     println!("Hello, world!");
+    devices::physical::print_paths();
 }
