@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc, sync::Mutex, thread};
+use std::{collections::HashMap, sync::Arc, sync::Mutex, thread, time::SystemTime};
 
 use crate::{
     arc_mu,
@@ -44,8 +44,7 @@ fn intercept_device(
         for ev in d.fetch_events().unwrap() {
             if ev.is_type_key() {
                 let mut collector = collector.lock().unwrap();
-                collector.parse_input(&device_alias, ev);
-                collector.print();
+                collector.collect(&device_alias, ev.value(), ev.code(), SystemTime::now());
             }
         }
     })
