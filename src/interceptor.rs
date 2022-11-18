@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::Arc, sync::Mutex, thread, time::SystemTime
 use crate::{
     arc_mu,
     devices::{self, physical::InputEventKindCheck},
-    input::raw_input_collector::RawInputCollector,
+    input::{raw_input_collector::RawInputCollector, raw_input_processor::RawInputProcessor},
 };
 
 pub fn start(alias_map: &HashMap<&str, &str>) {
@@ -44,7 +44,12 @@ fn intercept_device(
         for ev in d.fetch_events().unwrap() {
             if ev.is_type_key() {
                 let mut collector = collector.lock().unwrap();
-                collector.collect(&device_alias, ev.value(), ev.code(), SystemTime::now());
+                collector.collect_event(&device_alias, ev.value(), ev.code(), SystemTime::now());
+
+                RawInputProcessor::process(
+                    collector.get_fragments_before_release(),
+                    collector.get_fragments_after_press(),
+                );
             }
         }
     })

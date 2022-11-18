@@ -30,7 +30,13 @@ impl RawInputCollector {
             fragments_before: vec![],
         }
     }
-    pub fn collect(&mut self, device_alias: &str, value: i32, code: u16, time_pressed: SystemTime) {
+    pub fn collect_event(
+        &mut self,
+        device_alias: &str,
+        value: i32,
+        code: u16,
+        time_pressed: SystemTime,
+    ) {
         self.fragments_before = self.fragments_after.clone();
 
         match value {
@@ -42,6 +48,12 @@ impl RawInputCollector {
             }
             _ => (),
         }
+    }
+    pub fn get_fragments_after_press(&self) -> &Vec<RawInputFragment> {
+        &self.fragments_after
+    }
+    pub fn get_fragments_before_release(&self) -> &Vec<RawInputFragment> {
+        &self.fragments_before
     }
 }
 
@@ -59,7 +71,8 @@ mod raw_input_collector_tests {
     fn can_collect_events() {
         let mut collector = RawInputCollector::new();
 
-        collector.collect("L1", 1, Key::KEY_LEFTCTRL.code(), millis_from_epoch(0));
+        // press L1|LEFTCTRL
+        collector.collect_event("L1", 1, Key::KEY_LEFTCTRL.code(), millis_from_epoch(0));
         assert_eq!(collector.fragments_before.len(), 0);
         assert_eq!(collector.fragments_after.len(), 1);
         assert_eq!(
@@ -71,7 +84,13 @@ mod raw_input_collector_tests {
             "L1"
         );
 
-        collector.collect("R1", 1, Key::KEY_J.code(), millis_from_epoch(7));
+        // holding down L1|LEFTCTRL
+        collector.collect_event("L1", 2, Key::KEY_LEFTCTRL.code(), millis_from_epoch(20));
+        assert_eq!(collector.fragments_before.len(), 1);
+        assert_eq!(collector.fragments_after.len(), 1);
+
+        // press R1|J
+        collector.collect_event("R1", 1, Key::KEY_J.code(), millis_from_epoch(40));
         assert_eq!(collector.fragments_before.len(), 1);
         assert_eq!(collector.fragments_after.len(), 2);
         assert_eq!(
@@ -83,11 +102,13 @@ mod raw_input_collector_tests {
             "R1"
         );
 
-        collector.collect("L1", 0, Key::KEY_LEFTCTRL.code(), millis_from_epoch(57));
+        // release R1|J
+        collector.collect_event("R1", 0, Key::KEY_J.code(), millis_from_epoch(50));
         assert_eq!(collector.fragments_before.len(), 2);
         assert_eq!(collector.fragments_after.len(), 1);
 
-        collector.collect("R1", 0, Key::KEY_J.code(), millis_from_epoch(60));
+        // release L1|LEFTCTRL
+        collector.collect_event("L1", 0, Key::KEY_LEFTCTRL.code(), millis_from_epoch(80));
         assert_eq!(collector.fragments_before.len(), 1);
         assert_eq!(collector.fragments_after.len(), 0);
     }
