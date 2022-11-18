@@ -12,23 +12,42 @@ impl RawInputProcessor {
 
 #[cfg(test)]
 mod input_processor_test {
-    // use super::*;
-
-    use std::time::{Duration, SystemTime};
-
-    fn millis_from_unix_epoch(milis: u64) -> SystemTime {
-        SystemTime::UNIX_EPOCH + Duration::from_millis(milis)
-    }
+    use super::*;
+    use crate::{input::raw_input_collector::RawInputCollector, utils::millis_from_epoch};
+    use evdev::Key;
 
     #[test]
-    fn millis_from_unix_epoch_test() {
-        let time = millis_from_unix_epoch(7);
+    fn can_process_raw_input() {
+        let mut collector = RawInputCollector::new();
 
-        assert_eq!(
-            time.duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap()
-                .as_millis(),
-            7
+        collector.collect_event("L1", 1, Key::KEY_LEFTCTRL.code(), millis_from_epoch(0));
+        RawInputProcessor::process(
+            collector.get_fragments_before_release(),
+            collector.get_fragments_after_press(),
+        );
+
+        collector.collect_event("L1", 2, Key::KEY_LEFTCTRL.code(), millis_from_epoch(20));
+        RawInputProcessor::process(
+            collector.get_fragments_before_release(),
+            collector.get_fragments_after_press(),
+        );
+
+        collector.collect_event("R1", 1, Key::KEY_J.code(), millis_from_epoch(40));
+        RawInputProcessor::process(
+            collector.get_fragments_before_release(),
+            collector.get_fragments_after_press(),
+        );
+
+        collector.collect_event("R1", 0, Key::KEY_J.code(), millis_from_epoch(50));
+        RawInputProcessor::process(
+            collector.get_fragments_before_release(),
+            collector.get_fragments_after_press(),
+        );
+
+        collector.collect_event("L1", 0, Key::KEY_LEFTCTRL.code(), millis_from_epoch(80));
+        RawInputProcessor::process(
+            collector.get_fragments_before_release(),
+            collector.get_fragments_after_press(),
         );
     }
 }

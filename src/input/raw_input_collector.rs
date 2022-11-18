@@ -60,12 +60,8 @@ impl RawInputCollector {
 #[cfg(test)]
 mod raw_input_collector_tests {
     use super::*;
+    use crate::utils::millis_from_epoch;
     use evdev::Key;
-    use std::time::Duration;
-
-    fn millis_from_epoch(milis: u64) -> SystemTime {
-        SystemTime::UNIX_EPOCH + Duration::from_millis(milis)
-    }
 
     #[test]
     fn can_collect_events() {
