@@ -19,10 +19,10 @@ impl RuleSet {
             rules,
         }
     }
-    fn get_union_hash_map(&self) -> &HashMap<String, u32> {
+    pub fn get_union_interval_hash_map(&self) -> &HashMap<String, u32> {
         &self.union_interval_hash_map
     }
-    fn get_rules_hash_map(&self) -> &HashMap<String, RuleOutput> {
+    pub fn get_rules_hash_map(&self) -> &HashMap<String, RuleOutput> {
         &self.rules_hash_map
     }
 }
@@ -98,7 +98,7 @@ mod rule_set_test {
     #[test]
     fn can_get_union_interval_hash_map_from_ruleset() {
         let ruleset = create_mock_ruleset();
-        let union_interval_hash_map = ruleset.get_union_hash_map();
+        let union_interval_hash_map = ruleset.get_union_interval_hash_map();
 
         assert!(union_interval_hash_map.contains_key("L1|D L1|F"));
         assert!(union_interval_hash_map.contains_key("L1|V L1|SPACE"));
